@@ -1,7 +1,7 @@
-MERN Blogging Application
+# MERN Blogging Application
 Welcome to the MERN Blogging Application repository! This project is a full-stack web application built using the MERN stack (MongoDB, Express.js, React, Node.js). It allows users to create, read, update, and delete blog posts, as well as manage user authentication and authorization.
 
-Features
+## Features
 User Authentication: Secure user registration and login with hashed passwords.
 User Authorization: Role-based access control to protect certain routes and actions.
 Create & Manage Posts: Users can create new blog posts, edit existing ones, and delete their own posts.
@@ -11,7 +11,8 @@ Responsive Design: Optimized for both desktop and mobile devices.
 RESTful API: A well-structured API to handle all CRUD operations and user authentication.
 State Management: Efficient state management using Redux (or context API).
 Real-time Updates: Real-time updates using WebSockets (optional feature).
-Technologies Used
+
+### Technologies Used
 Frontend: React.js, React Router, Axios, Javascript 
 Backend: Node.js, Express.js, MongoDB, Mongoose, JWT (JSON Web Tokens) for authentication
 bcrypt for password hashing
