@@ -27,7 +27,7 @@ Clone the repository:
 
 bash
 Copy code
-git clone https://github.com/yourusername/mern-blogging-app.git
+git clone https://github.com/atharvap2003/mern-blogging-app.git
 cd mern-blogging-app
 Install dependencies:
 
