@@ -14,6 +14,7 @@ Real-time Updates: Real-time updates using WebSockets (optional feature).
 
 ### Technologies Used
 Frontend: React.js, React Router, Axios, Javascript 
+
 Backend: Node.js, Express.js, MongoDB, Mongoose, JWT (JSON Web Tokens) for authentication
 bcrypt for password hashing
 Other Tools:
