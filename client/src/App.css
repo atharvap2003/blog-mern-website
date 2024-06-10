@@ -1,6 +1,6 @@
 *{
   box-sizing: border-box;
-  font-family: Roboto;
+  font-family: Roboto, sans-serif;
 }
 a{
   cursor: pointer;
@@ -19,7 +19,7 @@ main{
 header{
   display:flex;
   justify-content:space-between;
-  margin-top: 20px;
+  margin-top: 10px;
   margin-bottom: 50px;
   align-items: center;
 }
