@@ -4,8 +4,13 @@ const bcrypt = require("bcryptjs");
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 const cookieParser = require("cookie-parser");
+const fs = require("fs");
+
+const multer = require("multer");
+const uploadMiddleware = multer({ dest: "uploads/" });
 //models
 const User = require("./models/user");
+const Post = require("./models/post");
 
 const app = express();
 app.use(cookieParser());
@@ -71,8 +76,26 @@ app.get("/profile", (req, res) => {
 
 app.post("/logout", (req, res) => {
   res.cookie("token", "").json({
-    "Response" : "OKK"
+    Response: "OKK",
   });
+});
+
+app.post("/post", uploadMiddleware.single("file"), async (req, res) => {
+  const { originalname, path } = req.file;
+  const parts = originalname.split(".");
+  const ext = parts[parts.length - 1];
+  const newPath = path + "." + ext;
+  fs.renameSync(path, newPath);
+
+  const { title, summary, content } = req.body;
+  const postDoc = await Post.create({
+    title,
+    summary,
+    content,
+    cover: newPath,
+  });
+
+  res.json(postDoc);
 });
 
 app.get("/", (req, res) => {

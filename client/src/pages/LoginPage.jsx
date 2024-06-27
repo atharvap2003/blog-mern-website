@@ -38,12 +38,14 @@ export default function LoginPage() {
           placeholder="username"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
+          required
         />
         <input
           type="password"
           placeholder="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          required
         />
         <button>Login</button>
       </form>
