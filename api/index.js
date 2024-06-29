@@ -7,7 +7,7 @@ const cookieParser = require("cookie-parser");
 const fs = require("fs");
 
 const multer = require("multer");
-const uploadMiddleware = multer({ dest: "uploads/" });
+const uploadMiddleware = multer({ dest: "uploads" });
 //models
 const User = require("./models/user");
 const Post = require("./models/post");
@@ -69,7 +69,7 @@ app.get("/profile", (req, res) => {
   const { token } = req.cookies;
   jwt.verify(token, secret, {}, (err, info) => {
     if (err) throw err;
-    res.json(info);
+    return res.json(info);
   });
   res.json(req.cookies);
 });
@@ -87,15 +87,30 @@ app.post("/post", uploadMiddleware.single("file"), async (req, res) => {
   const newPath = path + "." + ext;
   fs.renameSync(path, newPath);
 
-  const { title, summary, content } = req.body;
-  const postDoc = await Post.create({
-    title,
-    summary,
-    content,
-    cover: newPath,
-  });
+  const { token } = req.cookies;
+  jwt.verify(token, secret, {}, async (err, info) => {
+    if (err) throw err;
+    const { title, summary, content } = req.body;
+    const postDoc = await Post.create({
+      title,
+      summary,
+      content,
+      cover: newPath,
+      author: info.id,
+    });
 
-  res.json(postDoc);
+    res.json(postDoc);
+  });
+});
+
+app.get("/post", async (req, res) => {
+  try {
+    const posts = await Post.find();
+    res.json(posts);
+  } catch (error) {
+    console.error("Error fetching posts:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
 });
 
 app.get("/", (req, res) => {

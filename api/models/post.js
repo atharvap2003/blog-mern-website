@@ -16,9 +16,13 @@ const PostSchema = new Schema(
     cover: {
       type: String,
     },
+    author: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+    },
   },
   { timestamps: true }
 );
 
-const PostModel = model('Post', PostSchema);
+const PostModel = model("Post", PostSchema);
 module.exports = PostModel;

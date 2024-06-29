@@ -1,28 +1,27 @@
-import React from 'react';
+import React from "react";
+import { formatISO9075 } from "date-fns";
 
-export default function Post() {
+export default function Post({
+  title,
+  author,
+  summary,
+  cover,
+  content,
+  createdAt,
+}) {
   return (
     <>
       <div className="post">
         <div className="image">
-          <img
-            src="https://techcrunch.com/wp-content/uploads/2022/12/lawnmower-Large.jpeg"
-            alt="image"
-          />
+          <img src={"http://localhost:8000/uploads/" + cover} alt="image" />
         </div>
         <div className="texts">
-          <h2>
-            EcoFlow teases full-house battery backup coming later this year
-          </h2>
+          <h2>{title}</h2>
           <p className="info">
-            <a className="author">Atharva Pandharikar</a>
-            <time > 2023-01-06 16:45</time>
+            <a className="author">{author.username}</a>
+            <time>{formatISO9075(new Date(createdAt))}</time>
           </p>
-          <p className="summary">
-            Today at its special launch event, home backup power giant EcoFlow
-            launched a flurry of new products, including a “Whole-Home Backup
-            Power Solution.”
-          </p>
+          <p className="summary">{summary}</p>
         </div>
       </div>
     </>
