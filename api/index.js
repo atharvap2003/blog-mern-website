@@ -5,15 +5,17 @@ const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 const cookieParser = require("cookie-parser");
 const fs = require("fs");
+const path = require("path");
 
 const multer = require("multer");
-const uploadMiddleware = multer({ dest: "uploads" });
+const uploadMiddleware = multer({ dest: "uploads/" });
 //models
 const User = require("./models/user");
 const Post = require("./models/post");
 
 const app = express();
 app.use(cookieParser());
+app.use("/uploads", express.static(path.join(__dirname, "/uploads")));
 
 //salt for hashing && secret for creating jwt;
 const salt = bcrypt.genSaltSync(10);
@@ -40,10 +42,10 @@ app.post("/register", async (req, res) => {
       username,
       password: bcrypt.hashSync(password, salt),
     });
-    res.json({ requestData: { username, password } });
+    return res.json({ requestData: { username, password } });
   } catch (e) {
     console.log(e);
-    res.status(400).json(e);
+    return res.status(400).json(e);
   }
 });
 
@@ -55,13 +57,13 @@ app.post("/login", async (req, res) => {
     ///logged in
     jwt.sign({ username, id: userDoc._id }, secret, {}, (err, token) => {
       if (err) throw err;
-      res.cookie("token", token).json({
+      return res.cookie("token", token).json({
         id: userDoc._id,
         username,
       });
     });
   } else {
-    res.status(400).json("Bad Credentials");
+    return res.status(400).json("Bad Credentials");
   }
 });
 
@@ -69,7 +71,7 @@ app.get("/profile", (req, res) => {
   const { token } = req.cookies;
   jwt.verify(token, secret, {}, (err, info) => {
     if (err) throw err;
-    return res.json(info);
+    res.json(info);
   });
   res.json(req.cookies);
 });
@@ -82,40 +84,63 @@ app.post("/logout", (req, res) => {
 
 app.post("/post", uploadMiddleware.single("file"), async (req, res) => {
   const { originalname, path } = req.file;
-  const parts = originalname.split(".");
+  const parts = originalname.split(`.`);
   const ext = parts[parts.length - 1];
   const newPath = path + "." + ext;
   fs.renameSync(path, newPath);
 
-  const { token } = req.cookies;
-  jwt.verify(token, secret, {}, async (err, info) => {
-    if (err) throw err;
-    const { title, summary, content } = req.body;
-    const postDoc = await Post.create({
-      title,
-      summary,
-      content,
-      cover: newPath,
-      author: info.id,
-    });
+  console.log(path);
+  console.log(originalname);
+  console.log(parts);
+  console.log(ext);
+  console.log(newPath);
+  console.log(originalname);
+  try {
+    const { token } = req.cookies;
+    jwt.verify(token, secret, {}, async (err, info) => {
+      if (err) throw err;
+      const { title, summary, content } = req.body;
+      const postDoc = await Post.create({
+        title,
+        summary,
+        content,
+        cover: path,
+        author: info.id,
+      });
 
-    res.json(postDoc);
-  });
+      return res.json(postDoc);
+    });
+  } catch (error) {
+    return res.json({ error: "error" });
+  }
 });
 
 app.get("/post", async (req, res) => {
   try {
-    const posts = await Post.find();
-    res.json(posts);
+    const posts = await Post.find()
+      .populate("author", ["username"])
+      .sort({ createdAt: -1 })
+      .limit(10);
+    return res.json(posts);
   } catch (error) {
     console.error("Error fetching posts:", error);
-    res.status(500).json({ error: "Internal Server Error" });
+    return res.json({ error: "Internal Server Error" });
   }
 });
 
 app.get("/", (req, res) => {
   res.send("HomePage");
 });
+
+app.get('/post/:id', async(req, res)=>{
+  const {id} = req.params;
+  try {
+    const postDoc = await Post.findById(id).populate('author', ['username']);
+    res.json(postDoc);
+  } catch (error) {
+    console.log(error);
+  }
+})
 
 app.listen(8000, () => {
   console.log("Server is running on port 8000"); // Added a log statement for server start

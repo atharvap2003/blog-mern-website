@@ -6,8 +6,7 @@ export default function IndexPage() {
   const [posts, setPosts] = useState([]);
   useEffect(() => {
     fetch("http://localhost:8000/post").then((response) => {
-      response.json()
-        .then((posts) => {
+      response.json().then((posts) => {
           setPosts(posts);
           console.log(posts);
         })
@@ -19,7 +18,7 @@ export default function IndexPage() {
   return (
     <>
       {posts.length > 0 &&
-        posts.map((post) => <Post key={post._id} {...post} />)}
+        posts.map((post) => <Post key={posts._id} {...post} />)}
     </>
   );
 }

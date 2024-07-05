@@ -50,7 +50,7 @@ export default function CreatePost() {
     const response = await fetch("http://localhost:8000/post", {
       method: "POST",
       body: data,
-      credentials: 'include'
+      credentials: 'include',
     });
     if(response.ok){
       setRedirect(true)
@@ -70,6 +70,8 @@ export default function CreatePost() {
           onChange={(e) => setTitle(e.target.value)}
           placeholder={"title"}
           required
+          minLength='8'
+          maxLength='75'
         />
         <input
           type="summary"
@@ -77,6 +79,8 @@ export default function CreatePost() {
           onChange={(e) => setSummary(e.target.value)}
           min={10}
           placeholder={"summary"}
+          minLength='10'
+          maxLength='400'
           required
         />
         <input
