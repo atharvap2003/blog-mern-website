@@ -12,6 +12,7 @@ const uploadMiddleware = multer({ dest: "uploads/" });
 //models
 const User = require("./models/user");
 const Post = require("./models/post");
+const { log } = require("console");
 
 const app = express();
 app.use(cookieParser());
@@ -132,18 +133,40 @@ app.get("/", (req, res) => {
   res.send("HomePage");
 });
 
-app.get('/post/:id', async(req, res)=>{
-  const {id} = req.params;
+app.get("/post/:id", async (req, res) => {
+  const { id } = req.params;
   try {
-    const postDoc = await Post.findById(id).populate('author', ['username']);
+    const postDoc = await Post.findById(id).populate("author", ["username"]);
     res.json(postDoc);
   } catch (error) {
     console.log(error);
   }
-})
+});
+
+app.get("/profile-post", async (req, res) => {
+  try {
+    const { token } = req.cookies; // Access the specific token key
+    console.log("Cookies:", token);
+
+    if (!token) {
+      return res.status(401).json({ message: "Token not Exist!" });
+    }
+
+    const decoded = jwt.verify(token, secret);
+    if (!decoded || !decoded.id) {
+      return res.status(401).json({ message: "Invalid Token" });
+    }
+    console.log(decoded);
+    const userId = decoded.id;
+    const userPost = await Post.find({ author: userId });
+    console.log(userPost);
+    return res.json(userPost);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Error in Server" });
+  }
+});
 
 app.listen(8000, () => {
   console.log("Server is running on port 8000"); // Added a log statement for server start
 });
-
-// mongodb+srv://atharvapandharikar5:ZntxtwT6X39jXzf7@cluster0.wmmdh5e.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
