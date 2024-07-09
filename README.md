@@ -20,12 +20,9 @@ Other Tools:
 Webpack
 Babel
 ESLint
-Prettier
 Installation
 Clone the repository:
 
-bash
-Copy code
 git clone https://github.com/atharvap2003/mern-blogging-app.git
 
 cd mern-blogging-app
@@ -81,5 +78,5 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 Contact
 For any questions or feedback, please feel free to reach out:
 
-Email: your.email@example.com
-GitHub: yourusername
+Email: atharvapandharikar5@gmail.com
+GitHub: atharvap2003
