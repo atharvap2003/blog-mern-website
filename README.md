@@ -23,7 +23,7 @@ ESLint
 Installation
 Clone the repository:
 
-git clone https://github.com/atharvap2003/mern-blogging-app.git
+git clone https://github.com/atharvap2003/blog-mern-app.git
 
 cd mern-blogging-app
 Install dependencies:
