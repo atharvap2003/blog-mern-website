@@ -18,7 +18,7 @@ const app = express();
 app.use(cookieParser());
 app.use("/uploads", express.static(path.join(__dirname, "/uploads")));
 
-//salt for hashing && secret for creating jwt;
+//salt for hashing && secret for creating jwt; ZntxtwT6X39jXzf7
 const salt = bcrypt.genSaltSync(10);
 const secret = "abcdefghijk";
 
@@ -83,36 +83,67 @@ app.post("/logout", (req, res) => {
   });
 });
 
+// app.post("/post", uploadMiddleware.single("file"), async (req, res) => {
+//   const { originalname, path } = req.file;
+//   const parts = originalname.split(`.`);
+//   const ext = parts[parts.length - 1];
+//   const newPath = path + "." + ext;
+//   fs.renameSync(path, newPath);
+
+//   // console.log(path);
+//   // console.log(originalname);
+//   // console.log(parts);
+//   // console.log(ext);
+//   // console.log(newPath);
+//   // console.log(originalname);
+//   try {
+//     const { token } = req.cookies;
+//     jwt.verify(token, secret, {}, async (err, info) => {
+//       if (err) throw err;
+//       const { title, summary, content } = req.body;
+//       const postDoc = await Post.create({
+//         title,
+//         summary,
+//         content,
+//         cover: path,
+//         author: info.id,
+//       });
+
+//       return res.json(postDoc);
+//     });
+//   } catch (error) {
+//     return res.json({ error: "error" });
+//   }
+// });
 app.post("/post", uploadMiddleware.single("file"), async (req, res) => {
   const { originalname, path } = req.file;
   const parts = originalname.split(`.`);
   const ext = parts[parts.length - 1];
   const newPath = path + "." + ext;
-  fs.renameSync(path, newPath);
+  fs.renameSync(path, newPath); // Renames the file to include the extension
 
-  console.log(path);
-  console.log(originalname);
-  console.log(parts);
-  console.log(ext);
-  console.log(newPath);
-  console.log(originalname);
   try {
     const { token } = req.cookies;
     jwt.verify(token, secret, {}, async (err, info) => {
       if (err) throw err;
       const { title, summary, content } = req.body;
+
+      // Save the renamed file's path with the extension
+      const coverPath = `${newPath.split(`/`).pop()}`;
+
       const postDoc = await Post.create({
         title,
         summary,
         content,
-        cover: path,
+        cover: coverPath, // Correctly formatted cover path
         author: info.id,
       });
 
       return res.json(postDoc);
     });
   } catch (error) {
-    return res.json({ error: "error" });
+    console.error("Error creating post:", error);
+    return res.json({ error: "Error while creating post" });
   }
 });
 
@@ -146,7 +177,6 @@ app.get("/post/:id", async (req, res) => {
 app.get("/profile-post", async (req, res) => {
   try {
     const { token } = req.cookies; // Access the specific token key
-    console.log("Cookies:", token);
 
     if (!token) {
       return res.status(401).json({ message: "Token not Exist!" });
@@ -156,14 +186,28 @@ app.get("/profile-post", async (req, res) => {
     if (!decoded || !decoded.id) {
       return res.status(401).json({ message: "Invalid Token" });
     }
-    console.log(decoded);
+
     const userId = decoded.id;
     const userPost = await Post.find({ author: userId });
-    console.log(userPost);
+
     return res.json(userPost);
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Error in Server" });
+  }
+});
+
+app.delete('/profile-post/:id', async (req, res) => {
+  try {
+      const postId = req.params.id;
+      const deletedPost = await Post.findByIdAndDelete(postId);
+      if(!deletedPost){
+        return res.status(404).json({message:"Post Not Found"})
+      }
+      return res.json({message:"Post Deleted Successfully"})
+  } catch (error) {
+    console.error("Error in Deletion of Post:", error);
+    return res.status(500).json({message: 'Error in Server'})
   }
 });
 

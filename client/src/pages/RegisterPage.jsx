@@ -1,6 +1,8 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function RegisterPage() {
+  const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
@@ -13,6 +15,7 @@ export default function RegisterPage() {
     });
     if (response.status === 200) {
       alert("Registration Successfull");
+      navigate("/login");
     } else {
       alert("Registration failed");
     }
@@ -28,12 +31,14 @@ export default function RegisterPage() {
           placeholder="username"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
+          required
         />
         <input
           type="password"
           placeholder="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          required
         />
         <button>Register</button>
       </form>

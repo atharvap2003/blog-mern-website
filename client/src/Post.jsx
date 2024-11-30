@@ -16,11 +16,12 @@ export default function Post({
       <div className="post">
         <div className="image">
           <Link to={`/post/${_id}`}>
-            <img
+            {/* <img
               className="Imageurl"
               src="../src/assets/cloud-services-isometric-composition-with-big-cloud-computing-infrastructure-elements-connected-with-dashed-lines-vector-illustration_1284-30495.avif"
               alt="image"
-            />
+            /> */}
+            <img className="Imageurl" src={`http://localhost:8000/${cover}`} alt="image" />
           </Link>
         </div>
         <div className="texts">

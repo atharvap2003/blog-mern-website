@@ -1,11 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { MdDelete } from "react-icons/md";
-import {formatISO9075} from "date-fns";
+import { formatISO9075 } from "date-fns";
+import { UserContext } from "../userContext";
 
 export default function ProfilePage() {
   const [postData, setPostData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  const { userInfo, setUserInfo } = useContext(UserContext);
+  const username = userInfo?.username;
 
   useEffect(() => {
     try {
@@ -43,38 +47,79 @@ export default function ProfilePage() {
     return <p>You have no Posts.</p>;
   }
 
+  const handleDeletePost = (postId) => {
+    fetch(`http://localhost:8000/profile-post/${postId}`, {
+      method: "DELETE",
+      credentials: "include", // Ensures cookies are included
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        console.log("Delete response:", data);
+        // Remove the deleted post from the UI without re-fetching
+        setPostData((prevPosts) =>
+          prevPosts.filter((post) => post._id !== postId)
+        );
+      })
+      .catch((error) => {
+        console.error("Error deleting post:", error);
+      });
+  };
+
   return (
     <>
-      <div className="max-w-4xl mx-auto mt-10">
+      <div className="profile-page-section">
         <div className="bg-white shadow-md rounded-lg p-6">
           <div className="text-center mb-6 flex">
-            <h2 className="text-3xl font-bold text-gray-900">Userame: Test 10</h2>
+            <p className="text-sm font-bold text-gray-900">
+              Userame: {username}
+            </p>
           </div>
-          <div className="mt-8">
-            <h2 className="text-2xl font-semibold text-gray-800 mb-4">
+          <div className="">
+            <h2 className="text-xl font-semibold text-gray-800 mb-4">
               Created Blog Posts :
             </h2>
-            <ul className="">
+            <ul className="profile-post">
               {postData.length > 0 ? (
                 postData.map((post) => (
                   <div
                     key={post._id}
-                    className="bg-gray-100 rounded-lg p-4 mb-4 shadow-sm flex justify-between items-center"
+                    className="bg-gray-100 rounded-lg p-4 mb-4 shadow-sm flex justify-between items-center profile-post-section"
                   >
-                    <h3 className="text-xl font-semibold text-gray-900">
-                      {post.title}
-                    </h3>
-                    <time className="text-gray-700 mt-2">{formatISO9075(new Date(post.createdAt))}</time>
+                    <div>
+                      <h3 className="text-xl font-semibold text-gray-900">
+                        {post.title}
+                      </h3>
+                      <div className="profile-post-page">
+                        Created at : <br />
+                        <time className="text-gray-700 mt-2">
+                          {formatISO9075(new Date(post.createdAt))}
+                        </time>
+                      </div>
+                    </div>
                     <button
-                      onClick={() => deletePost(post.id)}
-                      className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-700 transition duration-300"
+                      onClick={() => handleDeletePost(post._id)}
+                      className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-700 transition duration-300 post-section-button"
                     >
                       <MdDelete size={20} />
                     </button>
                   </div>
                 ))
               ) : (
-                <p className="text-gray-700">No blog posts created yet.</p>
+                <>
+                  <div className="text-center mb-6 flex">
+                    <p className="text-sm font-bold text-gray-900">
+                      Userame: {username}
+                    </p>
+                  </div>
+                  <p className="text-gray-700 profile-page-section">
+                    No blog posts created yet.
+                  </p>
+                </>
               )}
             </ul>
           </div>
