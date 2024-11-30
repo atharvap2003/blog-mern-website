@@ -9,8 +9,7 @@ Rich Text Editor: A feature-rich editor to compose blog posts with formatting op
 Comment System: Users can comment on blog posts and engage in discussions.
 Responsive Design: Optimized for both desktop and mobile devices.
 RESTful API: A well-structured API to handle all CRUD operations and user authentication.
-State Management: Efficient state management using Redux (or context API).
-Real-time Updates: Real-time updates using WebSockets (optional feature).
+State Management: Efficient state management using context API.
 
 ### Technologies Used:
 Frontend: React.js, React Router, Axios, Javascript 
@@ -21,24 +20,23 @@ Other Tools:
 Webpack
 Babel
 ESLint
-Prettier
 Installation
 Clone the repository:
 
-bash
-Copy code
-git clone https://github.com/atharvap2003/mern-blogging-app.git
+git clone https://github.com/atharvap2003/blog-mern-app.git
+
 cd mern-blogging-app
 Install dependencies:
 
-bash
-Copy code
+
 # Install server dependencies
-cd server
+cd api
+
 npm install
 
 # Install client dependencies
-cd ../client
+cd client
+
 npm install
 Set up environment variables:
 
@@ -46,22 +44,25 @@ Create a .env file in the server directory and add your MongoDB URI, JWT secret,
 
 env
 Copy code
+
 MONGODB_URI=your_mongodb_uri
 JWT_SECRET=your_jwt_secret
+
 Run the application:
 
-bash
-Copy code
 # Run server
-cd server
+cd api
+
 npm start
 
 # Run client
-cd ../client
-npm start
+cd client
+
+npm run dev
 Open the application in your browser:
 
 Navigate to http://localhost:3000 to see the application in action.
+Navigate to http://localhost:5173 to see the application in action.
 
 Contributing
 Contributions are welcome! Please follow these steps to contribute:
@@ -77,5 +78,5 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 Contact
 For any questions or feedback, please feel free to reach out:
 
-Email: your.email@example.com
-GitHub: yourusername
+Email: atharvapandharikar5@gmail.com
+GitHub: atharvap2003
