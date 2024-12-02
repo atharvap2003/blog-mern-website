@@ -48,6 +48,13 @@ export default function ProfilePage() {
   }
 
   const handleDeletePost = (postId) => {
+    const userConfirmed = window.confirm(
+      "Are you sure you want to delete this post?"
+    );
+    if (!userConfirmed) {
+      return;
+    }
+
     fetch(`http://localhost:8000/profile-post/${postId}`, {
       method: "DELETE",
       credentials: "include", // Ensures cookies are included
@@ -60,7 +67,7 @@ export default function ProfilePage() {
       })
       .then((data) => {
         console.log("Delete response:", data);
-        // Remove the deleted post from the UI without re-fetching
+        // Removed the deleted post from the UI without re-fetching
         setPostData((prevPosts) =>
           prevPosts.filter((post) => post._id !== postId)
         );
@@ -72,7 +79,7 @@ export default function ProfilePage() {
 
   return (
     <>
-      <div className="profile-page-section">
+      <section className="profile-page-section">
         <div className="bg-white shadow-md rounded-lg p-6">
           <div className="text-center mb-6 flex">
             <p className="text-sm font-bold text-gray-900">
@@ -80,9 +87,9 @@ export default function ProfilePage() {
             </p>
           </div>
           <div className="">
-            <h2 className="text-xl font-semibold text-gray-800 mb-4">
+            <h4 className="text-xl font-semibold text-gray-800 mb-4">
               Created Blog Posts :
-            </h2>
+            </h4>
             <ul className="profile-post">
               {postData.length > 0 ? (
                 postData.map((post) => (
@@ -91,9 +98,9 @@ export default function ProfilePage() {
                     className="bg-gray-100 rounded-lg p-4 mb-4 shadow-sm flex justify-between items-center profile-post-section"
                   >
                     <div>
-                      <h3 className="text-xl font-semibold text-gray-900">
+                      <h4 className="text-xl font-semibold text-gray-900">
                         {post.title}
-                      </h3>
+                      </h4>
                       <div className="profile-post-page">
                         Created at : <br />
                         <time className="text-gray-700 mt-2">
@@ -124,7 +131,7 @@ export default function ProfilePage() {
             </ul>
           </div>
         </div>
-      </div>
+      </section>
     </>
   );
 }

@@ -29,7 +29,8 @@ header a{
 }
 header a.logo{
   font-weight: bold;
-  font-size: 1.5rem;
+  font-size: 1.8rem;
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 }
 header nav{
   display:flex;

@@ -33,7 +33,7 @@ export default function Header() {
     <>
       <header>
         <Link to="/" className="logo">
-          MyBlogs
+          Blogify
         </Link>
         <nav>
           {username && (
